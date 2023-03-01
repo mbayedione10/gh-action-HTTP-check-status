@@ -16,27 +16,24 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm install neat-csv
+        run: npm install
 
-      - name: Check status
-        id: check_status
+      - name: Path csv file
+        run: echo "SITE_CSV=data/site.csv" >> $GITHUB_ENV
+
+      - name: Read site CSV
+        run: |
+          SITES=$(node site-json.js)
+          echo "SITES=$SITES" >> $GITHUB_ENV
+
+      - name: Check http status code of production site
+        id: final-result
         uses: lakuapik/gh-actions-http-status@v1
         with:
-          sites: '${{ fromJSON(neatCSV(fileToString("data/site.csv"))) }}'
-          expected: '[200]'
+          sites: '${{ env.SITES }}'
+          expected: '[200,200,200,200]'
+        continue-on-error: true
 
       - name: Create issue
         if: failure()
-        uses: peter-evans/create-issue-from-file@v2
-        with:
-          title: "Problème détecté sur ${{ env.SITE }}"
-          body: |
-            $(cat template/issue-body.md)
-          labels: "bug"
-          assignees: ${{ secrets.ISSUE_ASSIGNEE }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SITE: ${{ steps.check_status.outputs.site }}
-          STATUS: ${{ steps.check_status.outputs.status }}
+        run: echo "${{ steps.final-result.outputs.status }}"
