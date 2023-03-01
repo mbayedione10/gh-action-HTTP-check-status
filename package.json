@@ -1,0 +1,22 @@
+{
+  "name": "gh-action-http-check-status",
+  "version": "1.0.0",
+  "description": "Vérification de l'état HTTP des sites Web à l'aide de Node.js et GitHub Actions",
+  "keywords": [
+    "http",
+    "status",
+    "check",
+    "node",
+    "github",
+    "actions"
+  ],
+  "author": "Mamadou Diagne",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AfricTivistes/gh-action-HTTP-check-status"
+  },
+  "dependencies": {
+    "neat-csv": "^5.0.0"
+  }
+}
